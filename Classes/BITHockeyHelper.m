@@ -52,6 +52,22 @@ NSString *bit_URLDecodedString(NSString *inputString) {
                            );
 }
 
+NSString *bit_base64String(NSData * data, unsigned long length) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
+  SEL base64EncodingSelector = NSSelectorFromString(@"base64EncodedStringWithOptions:");
+  if ([data respondsToSelector:base64EncodingSelector]) {
+    return [data base64EncodedStringWithOptions:0];
+  } else {
+#endif
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    return [data base64Encoding];
+#pragma clang diagnostic pop
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
+  }
+#endif
+}
+
 BOOL bit_validateEmail(NSString *email) {
   NSString *emailRegex =
   @"(?:[a-z0-9!#$%\\&'*+/=?\\^_`{|}~-]+(?:\\.[a-z0-9!#$%\\&'*+/=?\\^_`{|}"
