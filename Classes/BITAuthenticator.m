@@ -54,7 +54,7 @@ static NSString* const kBITAuthenticatorAuthTokenTypeKey = @"BITAuthenticatorAut
 
 @implementation BITAuthenticator {
   id _appDidBecomeActiveObserver;
-  id _appWillResignActiveObserver;
+  id _appDidEnterBackgroundOberser;
   UIViewController *_authenticationController;
 
   BOOL _isSetup;
@@ -659,13 +659,13 @@ static NSString* const kBITAuthenticatorAuthTokenTypeKey = @"BITAuthenticatorAut
                                                                                   [strongSelf applicationDidBecomeActive:note];
                                                                                 }];
   }
-  if(nil == _appWillResignActiveObserver) {
-    _appWillResignActiveObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillResignActiveNotification
+  if(nil == _appDidEnterBackgroundOberser) {
+    _appDidEnterBackgroundOberser = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification
                                                                                      object:nil
                                                                                       queue:NSOperationQueue.mainQueue
                                                                                  usingBlock:^(NSNotification *note) {
                                                                                    typeof(self) strongSelf = weakSelf;
-                                                                                   [strongSelf applicationWillResignActive:note];
+                                                                                   [strongSelf applicationDidEnterBackground:note];
                                                                                  }];
   }
 }
@@ -675,9 +675,9 @@ static NSString* const kBITAuthenticatorAuthTokenTypeKey = @"BITAuthenticatorAut
     [[NSNotificationCenter defaultCenter] removeObserver:_appDidBecomeActiveObserver];
     _appDidBecomeActiveObserver = nil;
   }
-  if(_appWillResignActiveObserver) {
-    [[NSNotificationCenter defaultCenter] removeObserver:_appWillResignActiveObserver];
-    _appWillResignActiveObserver = nil;
+  if(_appDidEnterBackgroundOberser) {
+    [[NSNotificationCenter defaultCenter] removeObserver:_appDidEnterBackgroundOberser];
+    _appDidEnterBackgroundOberser = nil;
   }
 }
 
@@ -763,11 +763,8 @@ static NSString* const kBITAuthenticatorAuthTokenTypeKey = @"BITAuthenticatorAut
   [self authenticate];
 }
 
-- (void)applicationWillResignActive:(NSNotification *)note {
-  //only reset if app is really going into the background, e.g not when pulling down
-  //the notification center
-  if(BITAuthenticatorAppRestrictionEnforcementOnAppActive == self.restrictionEnforcementFrequency &&
-     [[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) {
+- (void)applicationDidEnterBackground:(NSNotification *)note {
+  if(BITAuthenticatorAppRestrictionEnforcementOnAppActive == self.restrictionEnforcementFrequency) {
     self.validated = NO;
   }
 }
