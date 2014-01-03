@@ -54,3 +54,5 @@ UIImage *bit_imageWithContentsOfResolutionIndependentFile(NSString * path);
 UIImage *bit_imageNamed(NSString *imageName, NSString *bundleName);
 UIImage *bit_screenshot(void);
 UIImage *bit_appIcon(void);
+
+NSString *bit_base64String(NSData * data, unsigned long length);

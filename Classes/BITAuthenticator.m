@@ -413,8 +413,6 @@ static NSString* const kBITAuthenticatorAuthTokenTypeKey = @"BITAuthenticatorAut
                                                               parameters:params];
   if(BITAuthenticatorIdentificationTypeHockeyAppUser == self.identificationType) {
     NSString *authStr = [NSString stringWithFormat:@"%@:%@", email, password];
-    NSData *authData = [authStr dataUsingEncoding:NSASCIIStringEncoding];
-    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64Encoding]];
     NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
     NSString *authValue = [NSString stringWithFormat:@"Basic %@", bit_base64String(authData, authData.length)];
     [request setValue:authValue forHTTPHeaderField:@"Authorization"];
